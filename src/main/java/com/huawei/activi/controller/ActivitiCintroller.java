@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/activiti")
@@ -49,7 +50,7 @@ public class ActivitiCintroller {
 
     @RequestMapping("/deloy")
     public void deloy(@RequestParam("fileBpmn") String fileBpmnName) {
-        /*
+
         String preFilePath = "processes/";
         String fileBpmn = preFilePath + fileBpmnName + ".bpmn20.xml";
         System.out.println(fileBpmnName);
@@ -63,7 +64,7 @@ public class ActivitiCintroller {
 
         System.out.println(deployment.toString());
         System.out.println("Id:" + deployment.getId() + "  Name:" + deployment.getName() + "  key:" + deployment.getKey());
-        */
+
         List<ProcessDefinition> processDefinitionList = repositoryService.createProcessDefinitionQuery().list();
         for (ProcessDefinition processDefinition : processDefinitionList) {
             System.out.println("DeployId:" + processDefinition.getDeploymentId());
@@ -74,7 +75,11 @@ public class ActivitiCintroller {
 
     @RequestMapping("/startActiviti")
     public void startActiciti(@RequestParam("instanceKey") String instanceKey) {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(instanceKey);
+        Map<String, Object> variables=new HashMap<String,Object>();
+        variables.put("zichan", "30003086");
+        variables.put("zichanzong", "30003087");
+        variables.put("fengkong", "301,302,303");
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(instanceKey, variables);
         System.out.println("proInsKey:" + processInstance.getBusinessKey());
         System.out.println("deployId:" + processInstance.getDeploymentId());
         System.out.println("deployName:" + processInstance.getName());
@@ -84,7 +89,8 @@ public class ActivitiCintroller {
     @RequestMapping("/tasks")
     public void queryTaskList(@RequestParam("assignee") String assignee, @RequestParam("proInsId") String proInsId) {
         List<Task> taskList = taskService.createTaskQuery()
-                .taskAssignee(assignee)
+                //.taskAssignee(assignee)
+                .taskCandidateUser(assignee)
                 .processInstanceId(proInsId)
                 .list();
         System.out.println(taskList.size());
@@ -110,7 +116,14 @@ public class ActivitiCintroller {
         // 添加批注信息
         String comment = String.format("%s审批成功", assinee);
         taskService.addComment(taskId, null, comment);//comment为批注内容
-        taskService.complete(taskId);
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("风控总经理", "sunhao_41,sunhao_42");
+        variables.put("法务经理", "fa_1,fa_2");
+        variables.put("法务总经理", "faz_1,faz_2");
+        variables.put("总裁", "z_1,z_2");
+        taskService.setVariablesLocal(taskId, variables);
+
+        taskService.complete(taskId, variables);
     }
 
     @RequestMapping("/history")
@@ -127,5 +140,10 @@ public class ActivitiCintroller {
                 System.out.println("userId:" + comment.getUserId());
             }
         }
+    }
+
+    @RequestMapping("/addGroup")
+    public void addGroup() {
+        taskService.addCandidateUser("10004", "ymm");
     }
 }

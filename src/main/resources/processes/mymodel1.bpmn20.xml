@@ -3,10 +3,10 @@
   <process id="mymodel1" name="mymodel1" isExecutable="true">
     <documentation>mymodel1</documentation>
     <startEvent id="startEvent1" name="开始" activiti:initiator="applyUserId"></startEvent>
-    <userTask id="sid-FAA974DD-AEDE-4DEC-99F7-AF09735A4324" name="资产经理发起" activiti:assignee="30003086"></userTask>
+    <userTask id="sid-FAA974DD-AEDE-4DEC-99F7-AF09735A4324" name="资产经理发起" activiti:assignee="${zichan}"></userTask>
     <sequenceFlow id="sid-64BC7694-6AFC-47D3-857E-CE2471E3E091" sourceRef="startEvent1" targetRef="sid-FAA974DD-AEDE-4DEC-99F7-AF09735A4324"></sequenceFlow>
-    <userTask id="sid-915ACCBF-4803-4D42-9574-8A7702B4F220" name="资产部门总经理审核" activiti:assignee="30004502"></userTask>
-    <userTask id="sid-C3947173-9A58-42B1-A8D5-F48A46676CBE" name="风控经理审核" activiti:candidateUsers="风控经理"></userTask>
+    <userTask id="sid-915ACCBF-4803-4D42-9574-8A7702B4F220" name="资产部门总经理审核" activiti:assignee="${zichanzong}"></userTask>
+    <userTask id="sid-C3947173-9A58-42B1-A8D5-F48A46676CBE" name="风控经理审核" activiti:candidateUsers="${fengkong}"></userTask>
     <userTask id="sid-ED0C5CA2-CF05-4C50-94D8-5A51C3BDB6AD" name="风控部门总经理审核" activiti:candidateUsers="风控总经理"></userTask>
     <userTask id="sid-D1AC78D8-5A74-4A1C-AF38-9C827F4EE48F" name="法务经理审核" activiti:candidateUsers="法务经理"></userTask>
     <userTask id="sid-0489CBF6-4CE7-4E72-AD1E-B34212F5F445" name="法务部门总经理审核" activiti:candidateUsers="法务总经理"></userTask>
