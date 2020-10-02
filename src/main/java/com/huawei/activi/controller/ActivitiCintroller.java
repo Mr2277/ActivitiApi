@@ -1,10 +1,12 @@
 package com.huawei.activi.controller;
 
 import org.activiti.engine.*;
+import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -111,5 +113,19 @@ public class ActivitiCintroller {
         taskService.complete(taskId);
     }
 
-
+    @RequestMapping("/history")
+    public void history(@RequestParam("proInsId") String proInsId) {
+        // 通过流程实例查询所有的(用户任务类型)历史活动
+        List<HistoricActivityInstance> hais = historyService.createHistoricActivityInstanceQuery()
+                .processInstanceId(proInsId).activityType("userTask").list();
+        System.out.println(hais.size());
+        for (HistoricActivityInstance h : hais) {
+            System.out.println(h.getTaskId());
+            List<Comment> comments = taskService.getTaskComments(h.getTaskId());
+            for (Comment comment : comments) {
+                System.out.println("message:" + comment.getFullMessage());
+                System.out.println("userId:" + comment.getUserId());
+            }
+        }
+    }
 }

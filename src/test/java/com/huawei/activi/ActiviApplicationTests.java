@@ -1,8 +1,12 @@
 package com.huawei.activi;
 
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.impl.persistence.entity.GroupEntity;
+import org.activiti.engine.impl.persistence.entity.UserEntity;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
@@ -219,6 +223,40 @@ class ActiviApplicationTests {
             System.out.println("执行对象ID:"+hisProcessInst.getId());
             System.out.println("---------------------");
         }
+
+
+        //activiti支持链式编程
+        Deployment deploy = processEngine.getRepositoryService()
+                .createDeployment()
+                .addClasspathResource("diagrams/groupTaskDelegate.bpmn")
+                .addClasspathResource("diagrams/groupTaskDelegate.png")
+                .name("分配角色任务")
+                .deploy();
+        System.out.println("流程部署ID:"+deploy.getId());
+        System.out.println("流程部署的名称:"+deploy.getName());
+
+        IdentityService identityService =  processEngine.getIdentityService();
+        //创建角色
+        /*
+        identityService.saveGroup(new GroupEntity("部门主管"));
+        identityService.saveGroup(new GroupEntity("部门经理"));
+        identityService.saveGroup(new GroupEntity("CTO"));
+        //创建用户
+        identityService.saveUser(new UserEntity("张三"));
+        identityService.saveUser(new UserEntity("李四"));
+        identityService.saveUser(new UserEntity("王五"));
+        identityService.saveUser(new UserEntity("赵六"));
+        identityService.saveUser(new UserEntity("田七"));
+        identityService.saveUser(new UserEntity("胡八"));
+
+        //创建角色和用户的对应关系
+        identityService.createMembership("张三", "部门主管");
+        identityService.createMembership("李四", "部门主管");
+        identityService.createMembership("王五", "部门经理");
+        identityService.createMembership("赵六", "部门经理");
+        identityService.createMembership("田七", "CTO");
+        identityService.createMembership("胡八", "CTO");
+        */
     }
 
 }
