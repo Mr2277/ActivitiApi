@@ -1,6 +1,7 @@
 package com.huawei.activi.controller;
 
 import org.activiti.engine.*;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -78,25 +79,37 @@ public class ActivitiCintroller {
         System.out.println("proDefId:" + processInstance.getProcessDefinitionId());
     }
 
-    @RequestMapping("tasks")
-    public void queryTaskList() {
+    @RequestMapping("/tasks")
+    public void queryTaskList(@RequestParam("assignee") String assignee, @RequestParam("proInsId") String proInsId) {
         List<Task> taskList = taskService.createTaskQuery()
-                .taskAssignee("30003086")
+                .taskAssignee(assignee)
+                .processInstanceId(proInsId)
                 .list();
         System.out.println(taskList.size());
         for (Task task : taskList) {
-            System.out.println("id="+task.getId());
-            System.out.println("name="+task.getName());
-            System.out.println("assinee="+task.getAssignee());
-            System.out.println("createTime="+task.getCreateTime());
-            System.out.println("executionId="+task.getExecutionId());
-            System.out.println("流程定义ID:"+task.getProcessDefinitionId());
-            System.out.println("流程实例ID:"+task.getProcessInstanceId());
-            System.out.println("执行对象ID:"+task.getExecutionId());
-            System.out.println("任务ID:"+task.getId());//任务ID:10004
-            System.out.println("任务名称:"+task.getName());
-            System.out.println("任务的创建时间:"+task.getCreateTime());
+            System.out.println("id=" + task.getId());
+            System.out.println("name=" + task.getName());
+            System.out.println("assinee=" + task.getAssignee());
+            System.out.println("createTime=" + task.getCreateTime());
+            System.out.println("executionId=" + task.getExecutionId());
+            System.out.println("流程定义ID:" + task.getProcessDefinitionId());
+            System.out.println("流程实例ID:" + task.getProcessInstanceId());
+            System.out.println("执行对象ID:" + task.getExecutionId());
+            System.out.println("任务ID:" + task.getId());//任务ID:10004
+            System.out.println("任务名称:" + task.getName());
+            System.out.println("任务的创建时间:" + task.getCreateTime());
         }
     }
+
+    @RequestMapping("/complete")
+    public void complete(@RequestParam("taskId") String taskId, @RequestParam("assinee") String assinee) {
+        // 由于流程用户上下文对象是线程独立的，所以要在需要的位置设置，要保证设置和获取操作在同一个线程中
+        Authentication.setAuthenticatedUserId(assinee);// 批注人的名称  一定要写，不然查看的时候不知道人物信息
+        // 添加批注信息
+        String comment = String.format("%s审批成功", assinee);
+        taskService.addComment(taskId, null, comment);//comment为批注内容
+        taskService.complete(taskId);
+    }
+
 
 }
