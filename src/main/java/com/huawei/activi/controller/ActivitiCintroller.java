@@ -81,8 +81,10 @@ public class ActivitiCintroller {
         variables.put("zichanzong", "30003087");
         variables.put("fengkong", "301,302,303");
         */
-        variables.put("create", "30004502");
-        variables.put("manager", "30003086");
+        //runtimeService.startProcessInstanceByKey()
+        variables.put("teamLeader", "30000669");
+        variables.put("deptLeader", "30003080");
+        variables.put("ceo", "30003086");
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(instanceKey, variables);
         System.out.println("proInsKey:" + processInstance.getBusinessKey());
         System.out.println("deployId:" + processInstance.getDeploymentId());
@@ -114,16 +116,18 @@ public class ActivitiCintroller {
     }
 
     @RequestMapping("/complete")
-    public void complete(@RequestParam("taskId") String taskId, @RequestParam("assinee") String assinee) {
+    public void complete(@RequestParam("taskId") String taskId, @RequestParam("assinee") String assinee, @RequestParam("result") String result) {
         // 由于流程用户上下文对象是线程独立的，所以要在需要的位置设置，要保证设置和获取操作在同一个线程中
         Authentication.setAuthenticatedUserId(assinee);// 批注人的名称  一定要写，不然查看的时候不知道人物信息
         // 添加批注信息
-        String comment = String.format("%s审批成功", assinee);
+        String comment = result.equals("1") ? String.format("%s审批成功", assinee) : String.format("%s审批失败", assinee);
         taskService.addComment(taskId, null, comment);//comment为批注内容
         Map<String, Object> variables = new HashMap<>();
-        variables.put("result", 0);
-        taskService.setVariablesLocal(taskId, variables);
-
+        variables.put("teamLeader", "30000669");
+        variables.put("deptLeader", "30003080");
+        variables.put("ceo", "30003086");
+        variables.put("result", result);
+        taskService.setVariables(taskId, variables);
         taskService.complete(taskId, variables);
     }
 
