@@ -76,9 +76,13 @@ public class ActivitiCintroller {
     @RequestMapping("/startActiviti")
     public void startActiciti(@RequestParam("instanceKey") String instanceKey) {
         Map<String, Object> variables=new HashMap<String,Object>();
+        /*
         variables.put("zichan", "30003086");
         variables.put("zichanzong", "30003087");
         variables.put("fengkong", "301,302,303");
+        */
+        variables.put("create", "30004502");
+        variables.put("manager", "30003086");
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(instanceKey, variables);
         System.out.println("proInsKey:" + processInstance.getBusinessKey());
         System.out.println("deployId:" + processInstance.getDeploymentId());
@@ -89,8 +93,8 @@ public class ActivitiCintroller {
     @RequestMapping("/tasks")
     public void queryTaskList(@RequestParam("assignee") String assignee, @RequestParam("proInsId") String proInsId) {
         List<Task> taskList = taskService.createTaskQuery()
-                //.taskAssignee(assignee)
-                .taskCandidateUser(assignee)
+                .taskAssignee(assignee)
+                //.taskCandidateUser(assignee)
                 .processInstanceId(proInsId)
                 .list();
         System.out.println(taskList.size());
@@ -117,10 +121,7 @@ public class ActivitiCintroller {
         String comment = String.format("%s审批成功", assinee);
         taskService.addComment(taskId, null, comment);//comment为批注内容
         Map<String, Object> variables = new HashMap<>();
-        variables.put("风控总经理", "sunhao_41,sunhao_42");
-        variables.put("法务经理", "fa_1,fa_2");
-        variables.put("法务总经理", "faz_1,faz_2");
-        variables.put("总裁", "z_1,z_2");
+        variables.put("result", 0);
         taskService.setVariablesLocal(taskId, variables);
 
         taskService.complete(taskId, variables);
