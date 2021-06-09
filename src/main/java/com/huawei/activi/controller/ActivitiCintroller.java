@@ -82,9 +82,12 @@ public class ActivitiCintroller {
         variables.put("fengkong", "301,302,303");
         */
         //runtimeService.startProcessInstanceByKey()
+        /*
         variables.put("teamLeader", "30000669");
         variables.put("deptLeader", "30003080");
         variables.put("ceo", "30003086");
+        */
+        variables.put("create", "1091");
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(instanceKey, variables);
         System.out.println("proInsKey:" + processInstance.getBusinessKey());
         System.out.println("deployId:" + processInstance.getDeploymentId());
@@ -123,10 +126,14 @@ public class ActivitiCintroller {
         String comment = result.equals("1") ? String.format("%s审批成功", assinee) : String.format("%s审批失败", assinee);
         taskService.addComment(taskId, null, comment);//comment为批注内容
         Map<String, Object> variables = new HashMap<>();
+        /*
         variables.put("teamLeader", "30000669");
         variables.put("deptLeader", "30003080");
         variables.put("ceo", "30003086");
+        */
         variables.put("result", result);
+
+        //variables.put("manager", "30003086");
         taskService.setVariables(taskId, variables);
         taskService.complete(taskId, variables);
     }

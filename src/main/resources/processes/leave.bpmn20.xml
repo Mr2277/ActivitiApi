@@ -2,7 +2,9 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1601702817616" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema">
   <process id="leave" isClosed="false" isExecutable="true" processType="None">
     <startEvent id="start" name="StartEvent"/>
-    <userTask activiti:assignee="${create}" activiti:exclusive="true" id="create" name="提交申请"/>
+    <userTask activiti:assignee="${create}" activiti:exclusive="true" id="create" name="提交申请">
+
+    </userTask>
     <sequenceFlow id="_4" name="flew1" sourceRef="start" targetRef="create"/>
     <userTask activiti:assignee="${manager}" activiti:exclusive="true" id="manager" name="经理审核"/>
     <sequenceFlow id="_6" name="flew2" sourceRef="create" targetRef="manager"/>
@@ -10,7 +12,11 @@
     <sequenceFlow id="_8" name="flew3" sourceRef="manager" targetRef="gateway"/>
     <endEvent id="end" name="EndEvent"/>
     <sequenceFlow id="_10" name="flew4" sourceRef="gateway" targetRef="end">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result == 1}]]></conditionExpression>
+        <extensionElements>
+
+        <activiti:executionListener event="take" class="com.huawei.activi.controller.MyTakeListener"></activiti:executionListener>
+        </extensionElements>
+        <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result == 1}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="_11" name="flew5" sourceRef="gateway" targetRef="create">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${result == 0}]]></conditionExpression>
@@ -48,28 +54,28 @@
           <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="_4" id="BPMNEdge__4" sourceElement="_2" targetElement="_3">
+      <bpmndi:BPMNEdge bpmnElement="_4" id="BPMNEdge__4" sourceElement="start" targetElement="create">
         <omgdi:waypoint x="77.0" y="66.0"/>
         <omgdi:waypoint x="150.0" y="62.5"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_6" id="BPMNEdge__6" sourceElement="_3" targetElement="_5">
+      <bpmndi:BPMNEdge bpmnElement="_6" id="BPMNEdge__6" sourceElement="create" targetElement="manager">
         <omgdi:waypoint x="197.5" y="90.0"/>
         <omgdi:waypoint x="197.5" y="155.0"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_8" id="BPMNEdge__8" sourceElement="_5" targetElement="_7">
+      <bpmndi:BPMNEdge bpmnElement="_8" id="BPMNEdge__8" sourceElement="manager" targetElement="gateway">
         <omgdi:waypoint x="245.0" y="182.5"/>
         <omgdi:waypoint x="475.0" y="181.0"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_11" id="BPMNEdge__11" sourceElement="_7" targetElement="_3">
+      <bpmndi:BPMNEdge bpmnElement="_11" id="BPMNEdge__11" sourceElement="gateway" targetElement="create">
         <omgdi:waypoint x="475.0" y="181.0"/>
         <omgdi:waypoint x="385.0" y="60.0"/>
         <omgdi:waypoint x="235.0" y="60.0"/>
@@ -77,7 +83,7 @@
           <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_10" id="BPMNEdge__10" sourceElement="_7" targetElement="_9">
+      <bpmndi:BPMNEdge bpmnElement="_10" id="BPMNEdge__10" sourceElement="gateway" targetElement="end">
         <omgdi:waypoint x="475.0" y="181.0"/>
         <omgdi:waypoint x="397.0" y="366.0"/>
         <bpmndi:BPMNLabel>
